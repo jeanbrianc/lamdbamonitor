@@ -1,6 +1,8 @@
 """Helpers for interacting with an AI model to summarize errors or propose fixes."""
 
-from typing import List
+
+from typing import List, Optional
+
 
 import openai
 
@@ -9,9 +11,28 @@ import openai
 # to generate a short summary and potential fix. In a real deployment you would
 # provide API keys or use a local model.
 
+def summarize_errors(
+    top_errors: List[str],
+    logs: List[str],
+    model: str = "gpt-3.5-turbo",
+    api_key: Optional[str] = None,
+) -> str:
+    """Return an AI-generated summary for the given errors and logs.
 
-def summarize_errors(top_errors: List[str], logs: List[str], model: str = "gpt-3.5-turbo") -> str:
-    """Return an AI-generated summary for the given errors and logs."""
+    Parameters
+    ----------
+    top_errors:
+        The most common error messages.
+    logs:
+        Recent log lines from CloudWatch.
+    model:
+        The chat model to use.
+    api_key:
+        Optional OpenAI API key to use for this request.
+    """
+    if api_key:
+        openai.api_key = api_key
+
     prompt = (
         "You are an observability assistant. Summarize the probable root causes\n"
         "from these Lambda logs and suggest a fix if obvious.\n"
