@@ -67,3 +67,21 @@ alert_on_failure(
 
 `alert_on_failure` automatically calls OpenAI to summarize the recent logs and
 sends the result via SNS email when the failure rate crosses the threshold.
+
+## Packaging with Pants
+
+This repo includes a basic [Pants](https://www.pantsbuild.org/) setup to
+build a deployment package and Lambda layer. Install Pants by running:
+
+```bash
+curl -L -O https://static.pantsbuild.org/setup/pants && chmod +x pants
+```
+
+Package everything with:
+
+```bash
+./pants package ::
+```
+
+The resulting ZIP files will be placed in the `dist/` directory and can be
+uploaded directly to AWS.
