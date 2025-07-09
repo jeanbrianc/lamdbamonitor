@@ -14,6 +14,7 @@ def handler(event, context):
         function_names = [fn_value]
     else:
         function_names = list(fn_value or [])
+
     topic_arn = event.get("sns_topic_arn")
     minutes = event.get("minutes", 5)
     threshold = event.get("threshold", 0.05)
@@ -34,3 +35,4 @@ def handler(event, context):
         region,
         openai_api_key=openai_api_key,
     )
+

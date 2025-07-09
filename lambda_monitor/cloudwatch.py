@@ -37,6 +37,7 @@ def get_failure_rate(function_name: str, minutes: int = 5, region: str = "us-eas
     return rate
 
 
+
 def fetch_recent_logs(function_name: str, minutes: int = 5, region: str = "us-east-1") -> List[str]:
     """Fetch CloudWatch log messages for the Lambda from the last ``minutes``.
 
@@ -57,6 +58,7 @@ def fetch_recent_logs(function_name: str, minutes: int = 5, region: str = "us-ea
     logger.info(
         "Fetching logs for %s over last %s minutes in %s", function_name, minutes, region
     )
+
     client = boto3.client("logs", region_name=region)
     log_group = f"/aws/lambda/{function_name}"
     end_time = datetime.utcnow()
@@ -74,4 +76,5 @@ def fetch_recent_logs(function_name: str, minutes: int = 5, region: str = "us-ea
             if message:
                 events.append(message)
     logger.info("Fetched %d log events", len(events))
+
     return events
