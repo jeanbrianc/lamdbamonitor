@@ -1,6 +1,8 @@
 """Helpers for interacting with an AI model to summarize errors or propose fixes."""
 
+
 from typing import List, Optional
+
 
 import openai
 
@@ -8,7 +10,6 @@ import openai
 # The function below takes the top error messages and raw logs, then calls the model
 # to generate a short summary and potential fix. In a real deployment you would
 # provide API keys or use a local model.
-
 
 def summarize_errors(
     top_errors: List[str],
@@ -31,6 +32,7 @@ def summarize_errors(
     """
     if api_key:
         openai.api_key = api_key
+
     prompt = (
         "You are an observability assistant. Summarize the probable root causes\n"
         "from these Lambda logs and suggest a fix if obvious.\n"

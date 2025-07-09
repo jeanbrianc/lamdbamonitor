@@ -8,6 +8,7 @@ def handler(event, context):
     minutes = event.get("minutes", 5)
     threshold = event.get("threshold", 0.05)
     region = event.get("region", "us-east-1")
+
     openai_api_key = event.get("openai_api_key")
     if not function_name or not topic_arn:
         raise ValueError("function_name and sns_topic_arn are required")
@@ -19,3 +20,6 @@ def handler(event, context):
         region,
         openai_api_key=openai_api_key,
     )
+So 
+
+└── README.md

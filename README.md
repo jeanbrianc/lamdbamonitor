@@ -48,7 +48,9 @@ errors = find_common_errors(logs)
 ```python
 from lambda_monitor import summarize_errors
 
+
 summary = summarize_errors([e for e, _ in errors], logs, api_key="sk-...")
+
 print(summary)
 ```
 
@@ -62,7 +64,9 @@ alert_on_failure(
     "arn:aws:sns:us-east-1:123456789012:my-topic",
     minutes=10,
     threshold=0.05,
+
     openai_api_key="sk-...",  # optional
+
 )
 ```
 

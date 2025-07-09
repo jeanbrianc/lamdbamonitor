@@ -14,6 +14,7 @@ def alert_on_failure(
     region: str = "us-east-1",
     openai_api_key: Optional[str] = None,
 ) -> bool:
+
     """Check the failure rate and send an email alert if it exceeds the threshold.
 
     Returns True if an alert was sent.
