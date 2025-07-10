@@ -68,6 +68,7 @@ alert_on_failure(
 If ``function_names`` are not provided, all log groups matching
 ``/aws/lambda/*`` in the region will be monitored automatically.
 
+
 `alert_on_failure` automatically calls OpenAI to summarize the recent logs and
 sends the result via SNS email when the failure rate crosses the threshold.
 

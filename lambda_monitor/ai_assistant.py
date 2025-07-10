@@ -13,7 +13,6 @@ logger = logging.getLogger(__name__)
 # to generate a short summary and potential fix. In a real deployment you would
 # provide API keys or use a local model.
 
-
 def summarize_errors(
     top_errors: List[str],
     logs: List[str],

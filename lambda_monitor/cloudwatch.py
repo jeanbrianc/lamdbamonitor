@@ -3,6 +3,7 @@ import logging
 from datetime import datetime, timedelta
 from typing import List, Optional
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -35,7 +36,6 @@ def get_failure_rate(function_name: str, minutes: int = 5, region: str = "us-eas
         rate * 100,
     )
     return rate
-
 
 def fetch_recent_logs(function_name: str, minutes: int = 5, region: str = "us-east-1") -> List[str]:
     """Fetch CloudWatch log messages for the Lambda from the last ``minutes``.

@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 def alert_on_failure(
     topic_arn: str,
     function_names: Optional[List[str]] = None,
+
     minutes: int = 5,
     threshold: float = 0.05,
     region: str = "us-east-1",
@@ -25,6 +26,7 @@ def alert_on_failure(
     if not function_names:
         function_names = list_lambda_functions(region)
         logger.info("Discovered functions: %s", ", ".join(function_names))
+
 
     alerted = False
     for function_name in function_names:
