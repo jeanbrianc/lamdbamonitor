@@ -1,7 +1,6 @@
 """Simple alerting utilities using Amazon SNS."""
 
 import logging
-
 import boto3
 
 

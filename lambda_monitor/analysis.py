@@ -28,4 +28,3 @@ def find_common_errors(log_lines: List[str], top_n: int = 3) -> List[Tuple[str, 
     common = counts.most_common(top_n)
     logger.info("Found %d unique errors", len(counts))
     return common
-

@@ -8,7 +8,6 @@ import openai
 
 logger = logging.getLogger(__name__)
 
-
 # Placeholder for integration with your favorite AI library (e.g. OpenAI, Anthropic)
 # The function below takes the top error messages and raw logs, then calls the model
 # to generate a short summary and potential fix. In a real deployment you would
@@ -37,7 +36,6 @@ def summarize_errors(
         logger.info("Using provided OpenAI API key")
         openai.api_key = api_key
     logger.info("Generating summary with model %s", model)
-
     prompt = (
         "You are an observability assistant. Summarize the probable root causes\n"
         "from these Lambda logs and suggest a fix if obvious.\n"
@@ -52,4 +50,3 @@ def summarize_errors(
     summary = response["choices"][0]["message"]["content"].strip()
     logger.info("Summary generated")
     return summary
-

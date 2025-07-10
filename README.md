@@ -49,7 +49,6 @@ errors = find_common_errors(logs)
 from lambda_monitor import summarize_errors
 
 summary = summarize_errors([e for e, _ in errors], logs, api_key="sk-...")
-
 print(summary)
 ```
 
@@ -59,14 +58,16 @@ print(summary)
 from lambda_monitor import alert_on_failure
 
 alert_on_failure(
-    ["etl-step-1", "etl-step-2"],
-    "arn:aws:sns:us-east-1:123456789012:my-topic",
+    topic_arn="arn:aws:sns:us-east-1:123456789012:my-topic",
     minutes=10,
     threshold=0.05,
     openai_api_key="sk-...",  # optional
-
 )
 ```
+
+If ``function_names`` are not provided, all log groups matching
+``/aws/lambda/*`` in the region will be monitored automatically.
+
 
 `alert_on_failure` automatically calls OpenAI to summarize the recent logs and
 sends the result via SNS email when the failure rate crosses the threshold.

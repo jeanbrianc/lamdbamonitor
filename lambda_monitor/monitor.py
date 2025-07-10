@@ -1,7 +1,7 @@
 from typing import Optional, List
 import logging
 
-from .cloudwatch import get_failure_rate, fetch_recent_logs
+from .cloudwatch import get_failure_rate, fetch_recent_logs, list_lambda_functions
 from .analysis import find_common_errors
 from .ai_assistant import summarize_errors
 from .alerts import send_email_alert
@@ -10,8 +10,9 @@ logger = logging.getLogger(__name__)
 
 
 def alert_on_failure(
-    function_names: List[str],
     topic_arn: str,
+    function_names: Optional[List[str]] = None,
+
     minutes: int = 5,
     threshold: float = 0.05,
     region: str = "us-east-1",
@@ -19,8 +20,14 @@ def alert_on_failure(
 ) -> bool:
     """Check failure rates for each function and send email alerts when exceeded.
 
-    Returns True if any alert was sent.
+    ``function_names`` may be ``None`` to automatically discover all Lambda
+    functions via CloudWatch log groups. Returns ``True`` if any alert was sent.
     """
+    if not function_names:
+        function_names = list_lambda_functions(region)
+        logger.info("Discovered functions: %s", ", ".join(function_names))
+
+
     alerted = False
     for function_name in function_names:
         logger.info("Checking failure rate for %s", function_name)
