@@ -1,10 +1,13 @@
 """Helpers for interacting with an AI model to summarize errors or propose fixes."""
 
+import logging
 
 from typing import List, Optional
 
-
 import openai
+
+logger = logging.getLogger(__name__)
+
 
 # Placeholder for integration with your favorite AI library (e.g. OpenAI, Anthropic)
 # The function below takes the top error messages and raw logs, then calls the model
@@ -31,7 +34,9 @@ def summarize_errors(
         Optional OpenAI API key to use for this request.
     """
     if api_key:
+        logger.info("Using provided OpenAI API key")
         openai.api_key = api_key
+    logger.info("Generating summary with model %s", model)
 
     prompt = (
         "You are an observability assistant. Summarize the probable root causes\n"
@@ -44,4 +49,7 @@ def summarize_errors(
         model=model,
         messages=[{"role": "user", "content": prompt}],
     )
-    return response["choices"][0]["message"]["content"].strip()
+    summary = response["choices"][0]["message"]["content"].strip()
+    logger.info("Summary generated")
+    return summary
+

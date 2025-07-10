@@ -1,30 +1,42 @@
-from typing import Optional
+from typing import Optional, List
+import logging
 
 from .cloudwatch import get_failure_rate, fetch_recent_logs
 from .analysis import find_common_errors
 from .ai_assistant import summarize_errors
 from .alerts import send_email_alert
 
+logger = logging.getLogger(__name__)
+
 
 def alert_on_failure(
-    function_name: str,
+    function_names: List[str],
     topic_arn: str,
     minutes: int = 5,
     threshold: float = 0.05,
     region: str = "us-east-1",
     openai_api_key: Optional[str] = None,
 ) -> bool:
+    """Check failure rates for each function and send email alerts when exceeded.
 
-    """Check the failure rate and send an email alert if it exceeds the threshold.
-
-    Returns True if an alert was sent.
+    Returns True if any alert was sent.
     """
-    rate = get_failure_rate(function_name, minutes, region)
-    if rate > threshold:
-        logs = fetch_recent_logs(function_name, minutes, region)
-        top_errors = [e for e, _ in find_common_errors(logs)]
-        summary = summarize_errors(top_errors, logs, api_key=openai_api_key)
-        subject = f"Lambda {function_name} failure rate {rate:.1%}"
-        send_email_alert(topic_arn, subject, summary, region)
-        return True
-    return False
+    alerted = False
+    for function_name in function_names:
+        logger.info("Checking failure rate for %s", function_name)
+        rate = get_failure_rate(function_name, minutes, region)
+        if rate > threshold:
+            logger.info(
+                "Failure rate %.2f%% exceeds threshold %.2f%%",
+                rate * 100,
+                threshold * 100,
+            )
+            logs = fetch_recent_logs(function_name, minutes, region)
+            top_errors = [e for e, _ in find_common_errors(logs)]
+            summary = summarize_errors(top_errors, logs, api_key=openai_api_key)
+            subject = f"Lambda {function_name} failure rate {rate:.1%}"
+            send_email_alert(topic_arn, subject, summary, region)
+            alerted = True
+        else:
+            logger.info("Failure rate %.2f%% within threshold for %s", rate * 100, function_name)
+    return alerted

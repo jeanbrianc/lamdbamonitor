@@ -1,10 +1,14 @@
 import boto3
+import logging
 from datetime import datetime, timedelta
 from typing import List
+
+logger = logging.getLogger(__name__)
 
 
 def get_failure_rate(function_name: str, minutes: int = 5, region: str = "us-east-1") -> float:
     """Return the ratio of errors to invocations for the Lambda in the window."""
+    logger.info("Fetching failure rate for %s", function_name)
     client = boto3.client("cloudwatch", region_name=region)
     end_time = datetime.utcnow()
     start_time = end_time - timedelta(minutes=minutes)
@@ -23,7 +27,15 @@ def get_failure_rate(function_name: str, minutes: int = 5, region: str = "us-eas
 
     invocations = metric_sum("Invocations")
     errors = metric_sum("Errors")
-    return (errors / invocations) if invocations else 0.0
+    rate = (errors / invocations) if invocations else 0.0
+    logger.info(
+        "Failure rate for %s over last %s minutes: %.2f%%",
+        function_name,
+        minutes,
+        rate * 100,
+    )
+    return rate
+
 
 
 def fetch_recent_logs(function_name: str, minutes: int = 5, region: str = "us-east-1") -> List[str]:
@@ -43,6 +55,10 @@ def fetch_recent_logs(function_name: str, minutes: int = 5, region: str = "us-ea
     List[str]
         Collected log messages.
     """
+    logger.info(
+        "Fetching logs for %s over last %s minutes in %s", function_name, minutes, region
+    )
+
     client = boto3.client("logs", region_name=region)
     log_group = f"/aws/lambda/{function_name}"
     end_time = datetime.utcnow()
@@ -59,4 +75,6 @@ def fetch_recent_logs(function_name: str, minutes: int = 5, region: str = "us-ea
             message = event.get("message")
             if message:
                 events.append(message)
+    logger.info("Fetched %d log events", len(events))
+
     return events
